@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.9.1",
   "engineVersion": "e922089b7d7502aff4249d5da3420f6fa55fc6ad",
   "activeProvider": "postgresql",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel Speciality {\n  id String @id @default(uuid(7))\n\n  title String @unique @db.VarChar(255)\n\n  description String? @db.Text\n\n  icon String? @db.VarChar(255)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  isDeleted Boolean   @default(false)\n  deletedAt DateTime?\n\n  @@index([title], name: \"speciality_title_index\")\n  @@index([isDeleted], name: \"speciality_is_deleted_index\")\n  @@map(\"specialities\")\n}\n",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel Speciality {\n  id          String    @id @default(uuid(7))\n  title       String    @unique @db.VarChar(255)\n  description String?\n  icon        String?   @db.VarChar(255)\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime  @updatedAt\n  isDeleted   Boolean   @default(false)\n  deletedAt   DateTime?\n\n  @@index([title], map: \"speciality_title_index\")\n  @@index([isDeleted], map: \"speciality_is_deleted_index\")\n  @@map(\"specialities\")\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},

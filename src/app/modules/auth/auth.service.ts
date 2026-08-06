@@ -1,5 +1,6 @@
 import { UserStatus } from "../../../generated/prisma/enums";
 import { auth } from "../../lib/auth";
+import { prisma } from "../../lib/prisma";
 
 interface RegisterPatientInput {
     name: string;
@@ -30,7 +31,32 @@ const registerPatient = async (payload: RegisterPatientInput) => {
     }
     //transition will be here for save patient data in patient model
 
-    return data;
+
+    try{
+
+          const patient = await prisma.$transaction(async (tx) => {
+        const patientTx = await tx.patient.create({
+            data: {
+                userId: data.user.id,
+                name: name,
+                email: email,
+            },
+        });
+        return patientTx;
+    })
+     return {...data, patient};
+    }catch (error) {
+
+        console.error("Error saving patient data:", error);
+
+        await prisma.user.delete({
+            where: { id: data.user.id },
+        });
+        throw error;
+
+    }
+  
+   
 }
 
 const loginPatient = async (email: string, password: string) => {

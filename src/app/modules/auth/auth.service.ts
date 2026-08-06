@@ -1,6 +1,9 @@
+import status from "http-status";
 import { UserStatus } from "../../../generated/prisma/enums";
+import AppError from "../../errorHelpers/AppError";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
+import { tokenUtils } from "../../utils/token";
 
 interface RegisterPatientInput {
     name: string;
@@ -27,7 +30,7 @@ const registerPatient = async (payload: RegisterPatientInput) => {
     })
 
  if (!data.user) {
-        throw new Error("Failed to register patient");
+        throw new AppError(status.BAD_REQUEST, "Failed to register patient");
     }
     //transition will be here for save patient data in patient model
 
@@ -44,7 +47,33 @@ const registerPatient = async (payload: RegisterPatientInput) => {
         });
         return patientTx;
     })
-     return {...data, patient};
+   
+        const accessToken = tokenUtils.getAccessToken({
+            userId: data.user.id,
+            role: data.user.role,
+            name: data.user.name,
+            email: data.user.email,
+            status: data.user.status,
+            isDeleted: data.user.isDeleted,
+            emailVerified: data.user.emailVerified,
+        });
+
+        const refreshToken = tokenUtils.getRefreshToken({
+            userId: data.user.id,
+            role: data.user.role,
+            name: data.user.name,
+            email: data.user.email,
+            status: data.user.status,
+            isDeleted: data.user.isDeleted,
+            emailVerified: data.user.emailVerified,
+        });
+
+        return {
+            ...data,
+            accessToken,
+            refreshToken,
+            patient
+        }
     }catch (error) {
 
         console.error("Error saving patient data:", error);
@@ -68,20 +97,43 @@ const loginPatient = async (email: string, password: string) => {
     })
 
     if (!data.user) {
-        throw new Error("Failed to login patient");
+        throw new AppError(status.BAD_REQUEST, "Failed to login patient");
     }
 
     if(data.user.status !== UserStatus.ACTIVE) {
-        throw new Error("User is not active");
+        throw new AppError(status.FORBIDDEN, "User is not active");
     }
 
     if(data.user.isDeleted) {
-        throw new Error("User is deleted");
+        throw new AppError(status.FORBIDDEN, "User is deleted");
     }
 
    
+        const accessToken = tokenUtils.getAccessToken({
+            userId: data.user.id,
+            role: data.user.role,
+            name: data.user.name,
+            email: data.user.email,
+            status: data.user.status,
+            isDeleted: data.user.isDeleted,
+            emailVerified: data.user.emailVerified,
+        });
 
-    return data;
+        const refreshToken = tokenUtils.getRefreshToken({
+            userId: data.user.id,
+            role: data.user.role,
+            name: data.user.name,
+            email: data.user.email,
+            status: data.user.status,
+            isDeleted: data.user.isDeleted,
+            emailVerified: data.user.emailVerified,
+        });
+
+        return {
+            ...data,
+            accessToken,
+            refreshToken
+        }
 }
 export const authService = {
     registerPatient,

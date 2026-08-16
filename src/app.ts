@@ -1,4 +1,4 @@
-import express, { Application, Request, Response} from 'express';
+import express, { Application, Request, Response, urlencoded} from 'express';
 import { indexRouter } from './app/routes';
 import { globalErrorHandler } from './app/middleware/globalErrorHandler';
 import { notFound } from './app/middleware/notFound';
@@ -29,6 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
+app.use(urlencoded({extended:true}))
 app.use("/api/v1", indexRouter);
 // Basic route
 

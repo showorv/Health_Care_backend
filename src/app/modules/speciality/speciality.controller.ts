@@ -24,7 +24,13 @@ import { sendResponse } from "../../shared/sendResponse";
 // };
 
 const createSpeciality = catchAsync(async (req: Request, res: Response) => {
-  const payload = req.body;
+  
+  const payload = {
+    ...req.body,
+    icon: req.file?.path
+  };
+  // const payload = req.file;
+
   const speciality = await specialityService.createSpeciality(payload);
 
 sendResponse(res, {

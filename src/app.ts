@@ -8,8 +8,12 @@ import { auth } from './app/lib/auth';
 import path from 'path';
 import { envVars } from './app/config/env';
 import cors from "cors";
-
+import qs from "qs"
 export const app: Application = express();
+
+// used for query like appointmentFee[gte]=2000
+app.set("query engine", (str : string)=> qs.parse(str))
+
 
 app.set("view engine", "ejs")
 app.set("views", path.resolve(process.cwd(), `src/app/templates`))

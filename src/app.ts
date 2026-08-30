@@ -9,6 +9,10 @@ import path from 'path';
 import { envVars } from './app/config/env';
 import cors from "cors";
 import qs from "qs"
+import cron from "node-cron"
+import { AppointmentService } from './app/modules/appointment/appointment.service';
+import { PaymentController } from './app/modules/payment/payment.controller';
+
 export const app: Application = express();
 
 // used for query like appointmentFee[gte]=2000
@@ -17,6 +21,8 @@ app.set("query engine", (str : string)=> qs.parse(str))
 
 app.set("view engine", "ejs")
 app.set("views", path.resolve(process.cwd(), `src/app/templates`))
+
+app.post("/webhook", express.raw({ type: "application/json" }), PaymentController.handleStripeWebhookEvent)
 
 app.use("/api/auth", toNodeHandler(auth))
 
@@ -34,6 +40,18 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(urlencoded({extended:true}))
+
+// used for rerun schedule
+cron.schedule("*/25 * * * *", async () => {
+    try {
+        console.log("Running cron job to cancel unpaid appointments...");
+        await AppointmentService.cancelUnpaidAppointments();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error : any) {
+        console.error("Error occurred while canceling unpaid appointments:", error.message);    
+    }
+})
+
 app.use("/api/v1", indexRouter);
 // Basic route
 

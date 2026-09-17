@@ -3,6 +3,7 @@ import status from "http-status";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 import { AdminService } from "./admin.service";
+import { IRequestUser } from "../../interfaces/requestUserInterfaces";
 
 const getAllAdmins = catchAsync(
     async (req: Request, res: Response) => {
@@ -53,7 +54,7 @@ const deleteAdmin = catchAsync(
         const { id } = req.params;
         const user = req.user;
 
-        const result = await AdminService.deleteAdmin(id as string, user);
+        const result = await AdminService.deleteAdmin(id as string, user as IRequestUser);
 
         sendResponse(res, {
             httpStatusCode: status.OK,
@@ -65,9 +66,39 @@ const deleteAdmin = catchAsync(
 
 )
 
+const changeUserStatus = catchAsync(
+    async (req: Request, res: Response) => {
+        const user = req.user;
+        const payload = req.body;
+        const result = await AdminService.changeUserStatus(user as IRequestUser, payload);
+        sendResponse(res, {
+            httpStatusCode: status.OK,
+            success: true,
+            message: "User status changed successfully",
+            data: result,
+        })
+    }
+);
+
+const changeUserRole = catchAsync(
+    async (req: Request, res: Response) => {
+        const user = req.user;
+        const payload = req.body;
+        const result = await AdminService.changeUserRole(user as IRequestUser, payload);
+        sendResponse(res, {
+            httpStatusCode: status.OK,
+            success: true,
+            message: "User role changed successfully",
+            data: result,
+        })
+    }
+);
+
 export const AdminController = {
     getAllAdmins,
     updateAdmin,
     deleteAdmin,
     getAdminById,
+    changeUserStatus,
+    changeUserRole
 };

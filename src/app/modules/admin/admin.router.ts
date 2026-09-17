@@ -20,5 +20,11 @@ router.patch("/:id",
 router.delete("/:id",
     checkAuth(Role.SUPERADMIN),
     AdminController.deleteAdmin);
+    router.patch("/change-user-status", 
+    checkAuth(Role.SUPERADMIN, Role.ADMIN),
+     AdminController.changeUserStatus);
+router.patch("/change-user-role",
+     checkAuth(Role.SUPERADMIN),
+     AdminController.changeUserRole);
 
 export const AdminRoutes = router;

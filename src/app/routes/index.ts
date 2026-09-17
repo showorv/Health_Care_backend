@@ -9,18 +9,24 @@ import { AppointmentRoutes } from "../modules/appointment/appointment.route";
 import { PatientRoutes } from "../modules/patient/patient.route";
 import { ReviewRoutes } from "../modules/review/review.route";
 import { PrescriptionRoutes } from "../modules/prescription/prescription.route";
+import { PaymentRoutes } from "../modules/payment/payment.route";
+import { StatsRoutes } from "../modules/stats/stats.route";
+import { AdminRoutes } from "../modules/admin/admin.router";
 
 
 const router = Router();
 router.use("/auth" ,authRouter)
 router.use("/specialities" ,specialityRouter)
 router.use("/users" ,userRouter)
+router.use("/admins" ,AdminRoutes)
 router.use("/doctors" ,doctorRouter)
 router.use("/patients" ,PatientRoutes)
 router.use("/schedule" ,scheduleRouter)
 router.use("/doctor-schedule" ,DoctorScheduleRoutes)
 router.use("/appointments" ,AppointmentRoutes)
 router.use("/review" ,ReviewRoutes)
-router.use("/prescription" ,PrescriptionRoutes)
+router.use("/prescriptions" ,PrescriptionRoutes)
+router.use("/payment" ,PaymentRoutes)
+router.use("/stats" ,StatsRoutes)
 
 export const indexRouter = router;

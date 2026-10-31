@@ -33,6 +33,9 @@ interface EnvConfig {
     STRIPE_SECRET_KEY:string,
     SUPER_ADMIN_EMAIL:string,
     SUPER_ADMIN_PASSWORD:string
+    OPENROUTER_API_KEY:string
+    OPENROUTER_EMBEDDING_MODEL:string
+    OPENROUTER_LLM_MODEL:string
 
 }
 
@@ -66,7 +69,11 @@ const loadEnvVariables = (): EnvConfig => {
         'STRIPE_SECRET_KEY',
         'STRIPE_WEBHOOK_KEY',
         'SUPER_ADMIN_EMAIL',
-        'SUPER_ADMIN_PASSWORD'
+        'SUPER_ADMIN_PASSWORD',
+       ' OPENROUTER_API_KEY',
+   ' OPENROUTER_EMBEDDING_MODEL',
+    'OPENROUTER_LLM_MODEL'
+
     ]
 
     requireEnvVariable.forEach((variable) => {
@@ -104,6 +111,10 @@ const loadEnvVariables = (): EnvConfig => {
         STRIPE_WEBHOOK_KEY:process.env.STRIPE_WEBHOOK_KEY as string,
         SUPER_ADMIN_EMAIL:process.env.SUPER_ADMIN_EMAIL as string,
         SUPER_ADMIN_PASSWORD:process.env.SUPER_ADMIN_PASSWORD as string,
+        OPENROUTER_API_KEY:process.env.OPENROUTER_API_KEY as string,
+        OPENROUTER_EMBEDDING_MODEL:process.env.OPENROUTER_EMBEDDING_MODEL as string,
+        OPENROUTER_LLM_MODEL:process.env.OPENROUTER_LLM_MODEL as string,
+
     }
 }
 
